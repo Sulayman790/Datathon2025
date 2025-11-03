@@ -1,0 +1,50 @@
+# --- Jupyter / SageMaker ---
+.ipynb_checkpoints/
+*.ipynb.invalid
+.temp_sagemaker_unified_studio_debugging_info/
+# --- Python ---
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.venv/
+venv/
+# --- Build / Dist / Packaging ---
+build/
+dist/
+*.whl
+*.tar.gz
+# --- Logs / Temp ---
+*.log
+*.tmp
+*.bak
+# --- Project outputs (generated) ---
+out/
+outputs/
+# --- Caches ---
+cache/
+**/cache/
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+# --- Env / local config ---
+.env
+.env.*
+.libs.json
+fillings/
+**/fillings/
+.ipynb_checkpoints/
+**/__pycache__/
+*.pyc
+out/
+outputs/
+cache/
+**/cache/
+*.log
+*.tmp
+*.zip
+.env
+jeu_de_donnees.zip
