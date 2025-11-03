@@ -199,8 +199,41 @@ function ReadingGuide({ guide }) {
   )
 }
 
+/**
+ * NEW/UPDATED: ExposureReadingGuides is rendered below any table iframe.
+ * It adds the three explanatory cards:
+ *  - High Exposure — How to read this table
+ *  - Moderate Exposure — How to read this table
+ *  - Low Exposure — How to read this table
+ */
+function ExposureReadingGuides() {
+  const Card = ({ heading, children }) => (
+    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+      <div className="text-sm font-medium">{heading}</div>
+      <p className="mt-2 text-sm text-gray-700">{children}</p>
+    </div>
+  )
+  return (
+    <section className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+      <div className="font-medium">Exposure Tables — How to read</div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card heading="High Exposure — How to read this table">
+          This table lists the 30 companies most impacted by the regulation, based on both NLP (textual link to the law) and Quant (market reaction) scores. The Impact Score combines both metrics (70% NLP, 30% Quant). Here, more negative values indicate stronger exposure — firms like NXPI, LULU, and BG are highly sensitive and show strong regulatory impact.
+        </Card>
+        <Card heading="Moderate Exposure — How to read this table">
+          This table shows companies moderately influenced by the regulation. Their Impact Scores are closer to zero, meaning a balanced exposure — noticeable but not extreme. These firms show partial sensitivity in either textual references or market reactions, offering a mid-risk profile.
+        </Card>
+        <Card heading="Low Exposure — How to read this table">
+          This table lists firms with minimal exposure to the new regulation. Their Impact Scores are the least negative, reflecting limited textual and market linkage. These companies are defensive or unaffected, showing stable behavior around the announcement.
+        </Card>
+      </div>
+    </section>
+  )
+}
+
 function IframeCard({ title, caption, files }) {
   const [errors, setErrors] = useState({})
+  const hasTables = files.some((f) => f.toLowerCase().includes('/tables/'))
   return (
     <div className="bg-white rounded-2xl border border-gray-200">
       <div className="p-5 border-b">
@@ -232,6 +265,8 @@ function IframeCard({ title, caption, files }) {
             </div>
           )
         })}
+        {/* NEW/UPDATED: show detailed table-reading explanations whenever a table is present */}
+        {hasTables && <ExposureReadingGuides />}
       </div>
     </div>
   )
@@ -398,7 +433,11 @@ export default function App() {
       <header className="border-b bg-white">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <h1 className="text-lg font-semibold">LegImpact | The AI Legislative Risk Assistant</h1>
-          <span className="text-xs text-gray-500">DATATHON 2025</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-500">DATATHON 2025</span>
+            <img src={assetUrl('logos/aws.png')} alt="AWS" className="h-6 w-auto" />
+            <img src={assetUrl('logos/cdpq.png')} alt="CDPQ" className="h-6 w-auto" />
+          </div>
         </div>
       </header>
 
@@ -514,20 +553,6 @@ export default function App() {
 
               {status === 'COMPLETED' && resultData && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 rounded-xl border border-gray-200 p-4 bg-gray-50 space-y-3">
-                  {resultData.summary && <div className="text-sm"><span className="font-medium">Summary:</span> {resultData.summary}</div>}
-                  {Array.isArray(resultData.stocks) && resultData.stocks.length > 0 && (
-                    <div>
-                      <div className="text-sm font-medium mb-1">Stocks (demo):</div>
-                      <ul className="list-disc list-inside text-sm text-gray-800">
-                        {resultData.stocks.map((s) => (
-                          <li key={s} className="font-mono">
-                            {s}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {resultData.comment && <div className="text-sm text-gray-800"><span className="font-medium">Comment:</span> {resultData.comment}</div>}
                   <div className="flex gap-2">
                     <button onClick={() => setView('AFTER')} className="mt-2 px-4 py-2 rounded-xl bg-gray-900 text-white hover:bg-gray-800">View After Analysis</button>
                     <button onClick={() => setView('BEFORE')} className="mt-2 px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">View Before</button>
@@ -568,6 +593,7 @@ export default function App() {
               <button onClick={() => setView('BEFORE')} className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">View Before</button>
             </div>
           </div>
+
           {ASSETS.AFTER(risk).map((a) => (
             <IframeCard key={a.title} title={a.title} caption={a.caption} files={a.files} />
           ))}
